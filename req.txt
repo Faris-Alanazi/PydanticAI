@@ -1,0 +1,6 @@
+pydantic_ai 
+pydantic
+openai
+toml
+logfire
+tqdm
