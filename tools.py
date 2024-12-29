@@ -45,6 +45,7 @@ async def search_top_k(query: str, top_k: int) -> List[Dict[str, Any]]:
     results = [
         {"chunk": entry["chunk"], "similarity": cosine_similarity(query_embedding, entry["embedding"])}
         for entry in tqdm(embeddings, desc="Comparing embeddings", unit="chunk")
+        if "def " in entry["chunk"] or "class " in entry["chunk"]  # Basic filter for code-related chunks
     ]
 
     # Sort by similarity
