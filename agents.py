@@ -17,15 +17,18 @@ rag_agent = Agent(
     model="openai:gpt-4o",
     model_settings={"api_key": os.environ["OPENAI_API_KEY"]},
     system_prompt=(
-        "You are a helpful assistant with knowledge retrieval abilities. "
-        "You will use retrieved information to directly answer the user's query."
+        "You are a knowledgeable assistant with the ability to retrieve and analyze information. "
+        "The information you need to find is stored in a vector database, which is originally "
+        "derived from a GitHub repository. Use this knowledge to tailor your search queries "
+        "so you can fetch the most relevant and precise information needed to address user queries."
     ),
 )
 
 @rag_agent.tool_plain
 async def rag_search(query: str) -> str:
     """
-    Perform a RAG search, review the results, and answer the user's query.
+    Perform a RAG search on data originally from a GitHub repository, 
+    analyze the results, and answer the user's query.
     """
     # Step 1: Perform the RAG search
     query_length = len(query.split())
@@ -41,7 +44,11 @@ async def rag_search(query: str) -> str:
 
     # Step 3: Use OpenAI chat model to generate the answer
     messages = [
-        {"role": "system", "content": "You are a helpful assistant with knowledge retrieval abilities."},
+        {"role": "system", "content": (
+            "You are a knowledgeable assistant. The context of your search results is originally derived "
+            "from a GitHub repository before being transformed into a vector format. Use the provided context "
+            "to generate an insightful and accurate answer."
+        )},
         {"role": "user", "content": f"Context: {combined_text}\n\nUser Query: {query}\n\nAnswer the query based on the context."}
     ]
     response = client.chat.completions.create(

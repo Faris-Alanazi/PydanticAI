@@ -4,3 +4,4 @@ openai
 toml
 logfire
 tqdm
+streamlit
